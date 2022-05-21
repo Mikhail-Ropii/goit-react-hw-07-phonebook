@@ -1,42 +1,54 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
+import { fetchContacts, addContact, deleteContact } from './ContactsOperation';
 
 export const contactsSlice = createSlice({
-  name: 'items',
+  name: 'contacts',
   initialState: {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
+    items: [],
+    error: null,
   },
-  reducers: {
-    addContact(state, action) {
-      state.contacts.push(action.payload);
+  extraReducers: {
+    [fetchContacts.pending](state, action) {},
+    [fetchContacts.fulfilled](state, action) {
+      state.items = action.payload;
     },
-    deleteContact(state, action) {
-      state.contacts = state.contacts.filter(
-        contact => contact.id !== action.payload
+    [fetchContacts.rejected](state, action) {
+      state.error = action.payload;
+    },
+    [addContact.pending](state, action) {},
+    [addContact.fulfilled](state, action) {
+      state.items.push(action.payload);
+    },
+    [addContact.rejected](state, action) {
+      state.error = action.payload;
+    },
+    [deleteContact.pending](state, action) {},
+    [deleteContact.fulfilled](state, action) {
+      state.items = state.items.filter(
+        contact => contact.id !== action.payload.id
       );
+    },
+    [deleteContact.rejected](state, action) {
+      state.error = action.payload;
     },
   },
 });
 
-export const { addContact, deleteContact } = contactsSlice.actions;
+export default contactsSlice.reducer;
 
 export const filterSlice = createSlice({
   name: 'filter',
   initialState: '',
   reducers: {
-    changeFilter: (state, action) => action.payload,
+    changeFilter: (_, action) => action.payload,
   },
 });
 
 export const { changeFilter } = filterSlice.actions;
 
 //Selectors
-const getContacts = state => state.items.contacts;
+const getContacts = state => state.contacts.items;
 const getFilterValue = state => state.filter;
 
 //Hooks
@@ -44,6 +56,7 @@ export const useContacts = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(getContacts);
   const filter = useSelector(getFilterValue);
+  const getAllContacts = () => dispatch(fetchContacts());
   const addNewContact = newContact => dispatch(addContact(newContact));
   const filterContacts = value => dispatch(changeFilter(value));
   const deleteContactById = id => dispatch(deleteContact(id));
@@ -54,5 +67,6 @@ export const useContacts = () => {
     addNewContact,
     filterContacts,
     deleteContact: deleteContactById,
+    getAllContacts,
   };
 };

@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+import { useEffect, useMemo } from 'react';
 import { Container, Title, ContcTitle, Section } from './Phonebook.styled';
 import { ContactForm } from './contactForm/ContactForm';
 import { Filter } from './filter/Filter';
@@ -7,8 +8,19 @@ import { useContacts } from './redux/Slices';
 
 // const LS_KEY = 'contacts';
 export function App() {
-  const { contacts, filter, addNewContact, filterContacts, deleteContact } =
-    useContacts();
+  const {
+    contacts,
+    filter,
+    addNewContact,
+    filterContacts,
+    deleteContact,
+    getAllContacts,
+  } = useContacts();
+  console.log(contacts);
+
+  useEffect(() => {
+    getAllContacts();
+  }, [null]);
 
   const handleSubmit = (values, { resetForm }) => {
     if (
@@ -36,17 +48,18 @@ export function App() {
     filterContacts(evt.currentTarget.value);
   };
 
-  const findContact = () => {
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().trim().includes(filter.toLowerCase().trim())
+  const findContact = useMemo(() => {
+    return (
+      contacts?.filter(contact =>
+        contact.name.toLowerCase().trim().includes(filter.toLowerCase().trim())
+      ) ?? []
     );
-  };
+  }, [contacts, filter]);
 
   const handleDeleteContact = id => {
     deleteContact(id);
   };
 
-  const results = findContact();
   return (
     <Container>
       <Section>
@@ -55,7 +68,7 @@ export function App() {
         <ContcTitle>Contacts</ContcTitle>
         <Filter filter={filter} onChangeFilter={onChangeFilter} />
         <ContactList
-          contacts={results}
+          contacts={findContact}
           handleDeleteContact={handleDeleteContact}
         />
       </Section>
