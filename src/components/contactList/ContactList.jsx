@@ -5,9 +5,9 @@ import propTypes from 'prop-types';
 export const ContactList = ({ contacts, handleDeleteContact }) => {
   return (
     <ul>
-      {contacts.map(({ id, name, number }) => (
+      {contacts.map(({ id, name, phone }) => (
         <BookItem key={id}>
-          <ContactItem name={name} number={number} />
+          <ContactItem name={name} number={phone} />
           <Button type="button" onClick={() => handleDeleteContact(id)}>
             Delete
           </Button>
