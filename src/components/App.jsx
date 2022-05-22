@@ -16,11 +16,10 @@ export function App() {
     deleteContact,
     getAllContacts,
   } = useContacts();
-  console.log(contacts);
 
   useEffect(() => {
     getAllContacts();
-  }, []);
+  });
 
   const handleSubmit = (values, { resetForm }) => {
     if (
