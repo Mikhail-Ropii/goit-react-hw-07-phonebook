@@ -20,7 +20,7 @@ export function App() {
 
   useEffect(() => {
     getAllContacts();
-  }, [null]);
+  }, []);
 
   const handleSubmit = (values, { resetForm }) => {
     if (
