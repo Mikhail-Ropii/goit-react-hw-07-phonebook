@@ -56,7 +56,6 @@ export const useContacts = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(getContacts);
   const filter = useSelector(getFilterValue);
-  const getAllContacts = () => dispatch(fetchContacts());
   const addNewContact = newContact => dispatch(addContact(newContact));
   const filterContacts = value => dispatch(changeFilter(value));
   const deleteContactById = id => dispatch(deleteContact(id));
@@ -67,6 +66,5 @@ export const useContacts = () => {
     addNewContact,
     filterContacts,
     deleteContact: deleteContactById,
-    getAllContacts,
   };
 };

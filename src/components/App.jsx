@@ -5,21 +5,21 @@ import { ContactForm } from './contactForm/ContactForm';
 import { Filter } from './filter/Filter';
 import { ContactList } from './contactList/ContactList';
 import { useContacts } from './redux/Slices';
+import { useDispatch } from 'react-redux';
+import { fetchContacts } from './redux/ContactsOperation';
 
 // const LS_KEY = 'contacts';
 export function App() {
-  const {
-    contacts,
-    filter,
-    addNewContact,
-    filterContacts,
-    deleteContact,
-    getAllContacts,
-  } = useContacts();
+  const dispatch = useDispatch();
+  const { contacts, filter, addNewContact, filterContacts, deleteContact } =
+    useContacts();
 
   useEffect(() => {
-    getAllContacts();
-  });
+    async function asyncContacts() {
+      dispatch(fetchContacts());
+    }
+    asyncContacts();
+  }, [dispatch]);
 
   const handleSubmit = (values, { resetForm }) => {
     if (
