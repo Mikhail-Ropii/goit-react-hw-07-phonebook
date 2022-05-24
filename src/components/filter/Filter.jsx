@@ -1,6 +1,12 @@
-import propTypes from 'prop-types';
+import { useContacts } from 'components/redux/Slices';
 
-export const Filter = ({ filter, onChangeFilter }) => {
+export const Filter = () => {
+  const { filter, filterContacts } = useContacts();
+
+  const onChangeFilter = evt => {
+    filterContacts(evt.currentTarget.value);
+  };
+
   return (
     <form>
       <label>
@@ -9,8 +15,4 @@ export const Filter = ({ filter, onChangeFilter }) => {
       </label>
     </form>
   );
-};
-
-Filter.propTypes = {
-  filter: propTypes.string,
 };

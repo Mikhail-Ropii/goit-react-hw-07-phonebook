@@ -1,7 +1,9 @@
 import styled from '@emotion/styled';
+import { nanoid } from 'nanoid';
 import { Button, Label } from './ContactForm.styled';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
+import { useContacts } from 'components/redux/Slices';
 
 const FormStyle = styled(Form)`
   display: flex;
@@ -16,7 +18,31 @@ const phoneValid =
   /\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}/;
 const nameValid = /[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)/;
 
-export const ContactForm = ({ onHandleSubmit }) => {
+export const ContactForm = () => {
+  const { contacts, addNewContact } = useContacts();
+
+  const handleSubmit = (values, { resetForm }) => {
+    if (
+      contacts.find(
+        contact =>
+          contact.name.toLowerCase().trim() === values.name.toLowerCase().trim()
+      )
+    ) {
+      alert(`${values.name} is already in contacts`);
+      return;
+    }
+
+    const newContact = {
+      id: nanoid(5),
+      name: values.name,
+      number: values.number,
+    };
+
+    addNewContact(newContact);
+
+    resetForm();
+  };
+
   const initialValues = {
     name: '',
     number: '',
@@ -43,7 +69,7 @@ export const ContactForm = ({ onHandleSubmit }) => {
     <Formik
       initialValues={initialValues}
       validationSchema={schema}
-      onSubmit={onHandleSubmit}
+      onSubmit={handleSubmit}
     >
       <FormStyle>
         <Label htmlFor="name">
